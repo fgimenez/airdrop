@@ -10,7 +10,7 @@ const should = require('chai')
 const Airdrop = artifacts.require('Airdrop');
 const SimpleToken = artifacts.require('SimpleToken');
 
-contract('Airdrop', function() {
+contract('Airdrop', () => {
   const tokenSupply = new BigNumber('1e22');
 
   beforeEach(async function() {
@@ -19,14 +19,14 @@ contract('Airdrop', function() {
     await this.token.transfer(this.airdrop.address, tokenSupply);
   });
 
-  describe('when token address is 0x0', function() {
+  describe('when token address is 0x0', () => {
     it('creation reverts', async function() {
       const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
       await assertRevert(Airdrop.new(ZERO_ADDRESS));
     });
   });
 
-  describe('basic withdrawal', function() {
+  describe('basic withdrawal', () => {
     it('should assign tokens to allowed bouncer', async function() {
 
     });
