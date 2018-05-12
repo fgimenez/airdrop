@@ -47,15 +47,15 @@ contract('Airdrop', ([_, owner, authorizedUser, bouncerAddress]) => {
   });
 
   describe('basic token requests', () => {
-    it('should assign tokens to allowed bouncer', async function() {
+    it('should assign tokens with valid signature', async function() {
       const validSignature = this.genSig(authorizedUser);
       await this.airdrop.requestTokens(validSignature, { from: authorizedUser});
       const balance = await this.token.balanceOf(authorizedUser);
       assert.equal(balance, dropAmount);
     });
 
-    it('should revert not allowed bouncer', async function() {
-
+    it('should revert on invalid signature', async function() {
+      await assertRevert(this.airdrop.requestTokens('blablabla', { from: authorizedUser}));
     });
   });
 });
