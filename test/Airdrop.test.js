@@ -10,31 +10,28 @@ const should = require('chai')
 const Airdrop = artifacts.require('Airdrop');
 const SimpleToken = artifacts.require('SimpleToken');
 
-contract('Airdrop', () => {
+contract('Airdrop', function() {
   const tokenSupply = new BigNumber('1e22');
 
-  beforeEach(async () => {
+  beforeEach(async function() {
     this.token = await SimpleToken.new();
     this.airdrop = await Airdrop.new(this.token.address);
     await this.token.transfer(this.airdrop.address, tokenSupply);
   });
 
-  describe('when token is empty', function () {
-    it('creation reverts', async function () {
-      await assertRevert(Airdrop.new(address(0)));
+  describe('when token address is 0x0', function() {
+    it('creation reverts', async function() {
+      const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+      await assertRevert(Airdrop.new(ZERO_ADDRESS));
     });
   });
 
-  describe('basic withdrawal', () => {
-    it('should assign tokens to allowed bouncer', async function () {
-/*
-      await this.crowdsale.sendTransaction({ value: value, from: investor });
-      let balance = await this.token.balanceOf(investor);
-      balance.should.be.bignumber.equal(expectedTokenAmount);
-*/
+  describe('basic withdrawal', function() {
+    it('should assign tokens to allowed bouncer', async function() {
+
     });
 
-    it('should revert not allowed bouncer', async function () {
+    it('should revert not allowed bouncer', async function() {
 
     });
   });

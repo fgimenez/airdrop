@@ -6,6 +6,8 @@ contract Airdrop {
   ERC20 public token;
 
   constructor(ERC20 _token) public {
+    require(_token != address(0));
+
     token = _token;
   }
 }
