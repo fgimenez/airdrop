@@ -1,3 +1,4 @@
+import assertRevert from './helpers/assertRevert';
 
 const BigNumber = web3.BigNumber;
 
@@ -16,6 +17,12 @@ contract('Airdrop', () => {
     this.token = await SimpleToken.new();
     this.airdrop = await Airdrop.new(this.token.address);
     await this.token.transfer(this.airdrop.address, tokenSupply);
+  });
+
+  describe('when token is empty', function () {
+    it('creation reverts', async function () {
+      await assertRevert(Airdrop.new(address(0)));
+    });
   });
 
   describe('basic withdrawal', () => {
