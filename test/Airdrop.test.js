@@ -4,11 +4,6 @@ import { signHex } from './helpers/sign';
 
 const BigNumber = web3.BigNumber;
 
-const should = require('chai')
-  .use(require('chai-as-promised'))
-  .use(require('chai-bignumber')(BigNumber))
-  .should();
-
 export const getSigner = (contract, signer, data = '') => (addr) => {
   // via: https://github.com/OpenZeppelin/zeppelin-solidity/pull/812/files
   const message = contract.address.substr(2) + addr.substr(2) + data;
