@@ -18,7 +18,7 @@ contract('Airdrop', ([_, owner, authorizedUser, bouncerAddress]) => {
   const tokenSupply = new BigNumber('1e22');
   const dropAmount = 1000;
 
-  before(async function() {
+  before(async function () {
     this.token = await SimpleToken.new();
     this.airdrop = await Airdrop.new(this.token.address, dropAmount, { from: owner });
 
@@ -29,28 +29,28 @@ contract('Airdrop', ([_, owner, authorizedUser, bouncerAddress]) => {
   });
 
   describe('when token address is 0x0', () => {
-    it('creation reverts', async function() {
+    it('creation reverts', async function () {
       const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
       await assertRevert(Airdrop.new(ZERO_ADDRESS, dropAmount));
     });
   });
 
   describe('when drop amount 0', () => {
-    it('creation reverts', async function() {
+    it('creation reverts', async function () {
       await assertRevert(Airdrop.new(this.token.address, 0));
     });
   });
 
   describe('basic token requests', () => {
-    it('should assign tokens with valid signature', async function() {
+    it('should assign tokens with valid signature', async function () {
       const validSignature = this.genSig(authorizedUser);
-      await this.airdrop.requestTokens(validSignature, { from: authorizedUser});
+      await this.airdrop.requestTokens(validSignature, { from: authorizedUser });
       const balance = await this.token.balanceOf(authorizedUser);
       assert.equal(balance, dropAmount);
     });
 
-    it('should revert on invalid signature', async function() {
-      await assertRevert(this.airdrop.requestTokens('blablabla', { from: authorizedUser}));
+    it('should revert on invalid signature', async function () {
+      await assertRevert(this.airdrop.requestTokens('blablabla', { from: authorizedUser }));
     });
   });
 });
