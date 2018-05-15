@@ -15,6 +15,8 @@ contract Airdrop is SignatureBouncer {
   // The amount of tokens to be dropped on each request.
   uint256 private dropAmount;
 
+  event Airdrop(address indexed to, uint256 value);
+
   constructor(ERC20 _token, uint256 _dropAmount) public {
     require(_dropAmount > 0, "Drop amount must be positive.");
     require(_token != address(0), "Token address must not be 0x0");
@@ -29,5 +31,6 @@ contract Airdrop is SignatureBouncer {
    */
   function requestTokens(bytes _sig) public onlyValidSignature(_sig) {
     token.transfer(msg.sender, dropAmount);
+    emit Airdrop(msg.sender, dropAmount);
   }
 }

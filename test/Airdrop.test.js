@@ -45,18 +45,32 @@ contract('Airdrop', ([_, owner, authorizedUser, bouncerAddress, notAuthorizedUse
     describe('with valid signature', () => {
       before(async function () {
         this.validSignature = this.genSig(authorizedUser);
-        await this.airdrop.requestTokens(this.validSignature, { from: authorizedUser });
-      })
-      it('should assign tokens with valid sender', async function () {
-        const balance = await this.token.balanceOf(authorizedUser);
-        assert.equal(balance, dropAmount);
       });
+
+      describe('with valid sender', () => {
+        before(async function () {
+          this.logs = (await this.airdrop.requestTokens(this.validSignature, { from: authorizedUser })).logs;
+        });
+
+        it('should assign tokens', async function () {
+          const balance = await this.token.balanceOf(authorizedUser);
+          assert.equal(balance, dropAmount);
+        });
+
+        it('emits an airdrop event', async function () {
+          assert.equal(this.logs.length, 1);
+          assert.equal(this.logs[0].event, 'Airdrop');
+          assert.equal(this.logs[0].args.to, authorizedUser);
+          assert.equal(this.logs[0].args.value, dropAmount);
+        });
+      });
+
       it('should revert with invalid sender', async function () {
         await assertRevert(this.airdrop.requestTokens(this.validSignature, { from: notAuthorizedUser }));
       });
     });
 
-    it('should revert on invalid signature', async function () {
+    it('should revert with invalid signature', async function () {
       await assertRevert(this.airdrop.requestTokens('blablabla', { from: authorizedUser }));
     });
   });
