@@ -14,7 +14,7 @@ export const getSigner = (contract, signer, data = '') => (addr) => {
 const Airdrop = artifacts.require('Airdrop');
 const SimpleToken = artifacts.require('SimpleToken');
 
-contract('Airdrop', ([_, owner, authorizedUser, bouncerAddress]) => {
+contract('Airdrop', ([_, owner, authorizedUser, bouncerAddress, notAuthorizedUser]) => {
   const tokenSupply = new BigNumber('1e22');
   const dropAmount = 1000;
 
@@ -42,11 +42,18 @@ contract('Airdrop', ([_, owner, authorizedUser, bouncerAddress]) => {
   });
 
   describe('basic token requests', () => {
-    it('should assign tokens with valid signature', async function () {
-      const validSignature = this.genSig(authorizedUser);
-      await this.airdrop.requestTokens(validSignature, { from: authorizedUser });
-      const balance = await this.token.balanceOf(authorizedUser);
-      assert.equal(balance, dropAmount);
+    describe('with valid signature', () => {
+      before(async function () {
+        this.validSignature = this.genSig(authorizedUser);
+        await this.airdrop.requestTokens(this.validSignature, { from: authorizedUser });
+      })
+      it('should assign tokens with valid sender', async function () {
+        const balance = await this.token.balanceOf(authorizedUser);
+        assert.equal(balance, dropAmount);
+      });
+      it('should revert with invalid sender', async function () {
+        await assertRevert(this.airdrop.requestTokens(this.validSignature, { from: notAuthorizedUser }));
+      });
     });
 
     it('should revert on invalid signature', async function () {
