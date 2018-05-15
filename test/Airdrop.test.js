@@ -57,11 +57,15 @@ contract('Airdrop', ([_, owner, authorizedUser, bouncerAddress, notAuthorizedUse
           assert.equal(balance, dropAmount);
         });
 
-        it('emits an airdrop event', async function () {
+        it('should emit an airdrop event', async function () {
           assert.equal(this.logs.length, 1);
-          assert.equal(this.logs[0].event, 'Airdrop');
+          assert.equal(this.logs[0].event, 'AirdropSent');
           assert.equal(this.logs[0].args.to, authorizedUser);
           assert.equal(this.logs[0].args.value, dropAmount);
+        });
+
+        it('should not allow more than one request from the same account', async function () {
+          await assertRevert(this.airdrop.requestTokens(this.validSignature, { from: authorizedUser }));
         });
       });
 
