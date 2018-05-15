@@ -34,8 +34,8 @@ contract Airdrop is SignatureBouncer {
   function requestTokens(bytes _sig) public onlyValidSignature(_sig) {
     require(!airdropped[msg.sender]);
 
-    token.transfer(msg.sender, dropAmount);
     airdropped[msg.sender] = true;
+    token.transfer(msg.sender, dropAmount);
     emit AirdropSent(msg.sender, dropAmount);
   }
 }
